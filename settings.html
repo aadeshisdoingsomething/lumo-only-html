@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+    <title>Settings | LuX AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>:root {
+    /* --- Import Variables from chat styles --- */
+    --bg-color: #111827;
+    --text-color: #e5e7eb;
+    --text-color-secondary: #a0aec0;
+    --card-bg: rgba(31, 41, 55, 0.6);
+    --input-bg: rgba(31, 41, 55, 0.9);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --primary-accent: #7c3aed;
+    --secondary-accent: #2563eb;
+    --accent-gradient: linear-gradient(135deg, var(--secondary-accent), var(--primary-accent));
+    --link-color: #818cf8;
+}
+
+[data-theme="light"] {
+    --bg-color: #f9fafb;
+    --text-color: #1f2937;
+    --text-color-secondary: #6b7280;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --input-bg: rgba(255, 255, 255, 0.95);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --primary-accent: #6d28d9;
+    --secondary-accent: #1d4ed8;
+    --link-color: #4f46e5;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.6;
+}
+
+/* Settings Container */
+.settings-container {
+    width: min(600px, calc(100% - 2rem));
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    position: relative;
+}
+
+/* Headers */
+h1 {
+    font-size: 1.8rem;
+    margin: 0 0 2rem;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Setting Groups */
+.setting-group {
+    background: rgba(124, 58, 237, 0.05);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.setting-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.setting-group h2 {
+    font-size: 1.1rem;
+    color: var(--primary-accent);
+    margin: 0 0 1.2rem;
+    text-align: center;
+    width: 100%;
+}
+
+/* Setting Items */
+.setting-item {
+    width: 100%;
+    max-width: 600px;
+    margin: 1rem auto;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Inputs */
+input[type="text"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Inputs and Buttons Fix */
+.input-with-button {
+    display: flex;
+    gap: 0.8rem;
+    width: 100%;
+    align-items: center;
+}
+
+.input-with-button input,
+.setting-item textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    margin: 0;
+}
+
+.input-with-button input {
+    flex: 1;
+    min-height: 42px;
+}
+
+.input-with-button button {
+    padding: 0.8rem 1.2rem;
+    white-space: nowrap;
+    height: 100%;
+    min-height: 42px;
+}
+
+/* Textarea Fix */
+textarea#modelBehavior {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 1%;
+}
+
+/* Buttons */
+button {
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button.secondary {
+    background: transparent;
+    border: 1px solid var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+button.secondary:hover {
+    background: rgba(124, 58, 237, 0.1);
+    transform: translateY(-1px);
+}
+
+.save-button {
+    display: block;
+    width: 100%;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    margin-top: 2rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.save-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.25);
+}
+
+/* Back Button */
+.back-button {
+    position: absolute;
+    top: -3rem;
+    left: 0;
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--text-color);
+    border-color: var(--primary-accent);
+    transform: translateY(-1px);
+}
+
+/* Theme Toggle */
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    margin: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+}
+
+.toggle-label {
+    display: inline-block !important;
+    margin-left: 0.8rem;
+    vertical-align: middle;
+    font-weight: 500;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--text-color-secondary);
+    opacity: 0.6;
+    border-radius: 28px;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+    background: var(--accent-gradient);
+    opacity: 1;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.switch-label {
+    font-weight: 500;
+    color: var(--text-color);
+    user-select: none;
+}
+
+/* Help Link */
+.help-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--link-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.help-link:hover {
+    color: var(--primary-accent);
+    text-decoration: underline;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .settings-container {
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .back-button {
+        top: -2.5rem;
+    }
+
+    .setting-group {
+        padding: 1.2rem;
+    }
+
+    .input-with-button {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .input-with-button button {
+        width: 100%;
+    }
+}</style>
+</head>
+<body>
+    <div class="settings-container">
+        <a href="index.html" id="homeButton">🏠 Home</a>
+        <a href="chat.html" class="back-button">← Back to Chat</a>
+        <h1>Settings</h1>
+
+        <div class="setting-group">
+            <h2>Appearance</h2>
+            <div class="setting-item">
+                <label class="switch-wrapper">
+                    <div class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </div>
+                    <span class="switch-label">Light Mode</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h2>API Configuration</h2>
+            <div class="setting-item">
+                <label for="apiKeyInput">Gemini API Key</label>
+                <div class="input-with-button">
+                    <input type="password" id="apiKeyInput" placeholder="Enter your API key">
+                    <button type="button" class="secondary-button" onclick="toggleApiKeyVisibility()">Show</button>
+                </div>
+                <a href="apikey-instructions.html" class="help-link">How to get an API key →</a>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h2>Model Behavior</h2>
+            <div class="setting-item">
+                <label for="modelBehavior">Custom Instructions</label>
+                <textarea id="modelBehavior" placeholder="Define how the AI should respond to your messages. For example: 'Be concise and direct in your responses, focusing on practical solutions.'"></textarea>
+            </div>
+        </div>
+
+        <button onclick="saveSettings()" class="primary-button">Save Changes</button>
+    </div>
+
+    <script>document.addEventListener('DOMContentLoaded', () => {
+    const apiKey = localStorage.getItem('geminiApiKey') || '';
+    const theme = localStorage.getItem('theme') || 'dark';
+    const modelBehavior = localStorage.getItem('modelBehavior') || '';
+
+    document.getElementById('apiKeyInput').value = apiKey;
+    document.getElementById('themeToggle').checked = theme === 'light';
+    document.getElementById('modelBehavior').value = modelBehavior;
+
+    applyTheme(theme);
+});
+
+function saveSettings() {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const theme = document.getElementById('themeToggle').checked ? 'light' : 'dark';
+    const modelBehavior = document.getElementById('modelBehavior').value.trim();
+
+    localStorage.setItem('geminiApiKey', apiKey);
+    localStorage.setItem('theme', theme);
+    localStorage.setItem('modelBehavior', modelBehavior);
+
+    applyTheme(theme);
+    
+    // Show feedback toast
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #10B981;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        animation: slideUp 0.3s ease-out, fadeOut 0.3s ease-out 2s forwards;
+        z-index: 1000;
+    `;
+    toast.textContent = 'Settings saved successfully!';
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 2500);
+
+    // Clear unsaved changes flag after saving
+    hasUnsavedChanges = false;
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0a0a0a';
+    document.body.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0a0a0a';
+}
+
+document.getElementById('themeToggle').addEventListener('change', (e) => {
+    applyTheme(e.target.checked ? 'light' : 'dark');
+});
+
+// Add beforeunload warning if there are unsaved changes
+let hasUnsavedChanges = false;
+
+function trackChanges() {
+    hasUnsavedChanges = true;
+}
+
+['apiKeyInput', 'themeToggle', 'modelBehavior'].forEach(id => {
+    document.getElementById(id).addEventListener('change', trackChanges);
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+    }
+});
+
+function toggleApiKeyVisibility() {
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const showHideBtn = document.querySelector('.show-hide-btn');
+    
+    if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        showHideBtn.textContent = 'Hide';
+    } else {
+        apiKeyInput.type = 'password';
+        showHideBtn.textContent = 'Show';
+    }
+}</script>
+</body>
+</html>
