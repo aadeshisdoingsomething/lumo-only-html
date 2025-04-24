@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+  <title>LuX Chat</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <style>/* === Combined Styles for Chat & Settings (v4 - Integrated) === */
+
+/* --- Base Variables (Inspired by landing.css) --- */
+:root {
+	/* Dark Theme (Default) */
+	--bg-color: #111827; /* Dark Gray/Blue */
+	--text-color: #e5e7eb; /* Light Gray */
+	--text-color-secondary: #a0aec0; /* Lighter gray */
+	--card-bg: rgba(31, 41, 55, 0.6); /* Semi-transparent Dark Gray/Blue */
+	--input-bg: rgba(31, 41, 55, 0.9); /* Slightly less transparent for inputs */
+	--border-color: rgba(255, 255, 255, 0.1);
+	--primary-accent: #7c3aed; /* Purple */
+	--secondary-accent: #2563eb; /* Blue */
+	--accent-gradient: linear-gradient(135deg, var(--secondary-accent), var(--primary-accent));
+	--link-color: #818cf8; /* Light Purple/Blue */
+	--code-bg: #1e1e1e; /* Darker for code blocks */
+	--error-color: #f87171;
+	--error-bg: rgba(239, 68, 68, 0.1);
+	--error-border: rgba(239, 68, 68, 0.3);
+	--success-color: #34d399;
+	--success-bg: rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="light"] {
+	/* Light Theme */
+	--bg-color: #f9fafb; /* Very Light Gray */
+	--text-color: #1f2937; /* Dark Gray/Blue */
+	--text-color-secondary: #6b7280; /* Medium Gray */
+	--card-bg: rgba(255, 255, 255, 0.8); /* Semi-transparent White */
+	--input-bg: rgba(255, 255, 255, 0.95); /* Near Opaque White */
+	--border-color: rgba(0, 0, 0, 0.1);
+	--primary-accent: #6d28d9; /* Darker Purple */
+	--secondary-accent: #1d4ed8; /* Darker Blue */
+	--accent-gradient: linear-gradient(135deg, var(--secondary-accent), var(--primary-accent));
+	--link-color: #4f46e5; /* Indigo */
+	--code-bg: #f3f4f6; /* Light Gray for code blocks */
+	--error-color: #ef4444;
+	--error-bg: rgba(239, 68, 68, 0.1);
+	--error-border: rgba(239, 68, 68, 0.3);
+	--success-color: #10b981;
+	--success-bg: rgba(16, 185, 129, 0.1);
+}
+
+/* --- Base HTML & Body Styles --- */
+html {
+	scroll-behavior: smooth;
+	box-sizing: border-box;
+}
+
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	margin: 0;
+	padding: 0;
+	line-height: 1.7;
+	font-size: 16px;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Container for all main content */
+.container {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 2rem;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Apply flex layout only when chat container is present */
+body:has(.chat-container) {
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- General Elements --- */
+h1, h2, h3 {
+	margin-top: 0;
+	font-weight: 700;
+	color: var(--text-color);
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 1.5rem; line-height: 1.2; }
+h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); color: var(--text-color-secondary); }
+h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--primary-accent); }
+p { margin-bottom: 1rem; max-width: 70ch; text-align: center; margin-left: auto; margin-right: auto; }
+a { color: var(--link-color); text-decoration: none; transition: color 0.2s ease; }
+a:hover { text-decoration: underline; color: var(--primary-accent); }
+hr { border: none; height: 1px; background-color: var(--border-color); margin: 1rem 0; }
+
+/* --- Button Styles (Inspired by landing.css) --- */
+button, .cta-button {
+	display: inline-flex; align-items: center; justify-content: center;
+	padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 500;
+	color: white; /* Default text color for buttons */
+	text-decoration: none; border-radius: 8px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Added border/color */
+	border: 1px solid transparent; cursor: pointer; text-align: center;
+	white-space: nowrap; box-sizing: border-box; min-height: 48px;
+}
+
+button.primary, .cta-button.primary {
+	background: var(--accent-gradient); /* Apply gradient */
+	background-size: 200% 100%;
+	background-position: right bottom;
+	border: none;
+	color: white; /* Explicitly set white text */
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); /* Add shadow like landing page */
+}
+button.primary:hover, .cta-button.primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25);
+	background-position: left bottom;
+	text-decoration: none;
+}
+
+button.secondary, .cta-button.secondary {
+	background: transparent; border: 1px solid var(--primary-accent);
+	color: var(--primary-accent); text-shadow: none; /* Remove text shadow */
+}
+[data-theme="light"] button.secondary, [data-theme="light"] .cta-button.secondary {
+	 color: var(--primary-accent); border-color: var(--primary-accent);
+}
+button.secondary:hover, .cta-button.secondary:hover {
+	background: rgba(124, 58, 237, 0.1); transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgba(124, 58, 237, 0.1);
+	color: var(--link-color); text-decoration: none; border-color: var(--link-color);
+}
+
+button:disabled, .cta-button:disabled {
+	opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;
+	background: var(--text-color-secondary); border-color: transparent;
+	color: var(--bg-color); /* Adjust disabled text color for contrast */
+	text-shadow: none;
+}
+
+/* Specific Button Adjustments (e.g., settings show/hide) */
+.show-hide-btn {
+    /* Apply secondary styles */
+	padding: 0.5rem 1rem; font-size: 0.9rem; min-height: auto;
+	background: transparent; border: 1px solid var(--primary-accent);
+	color: var(--primary-accent); text-shadow: none;
+}
+.show-hide-btn:hover {
+	background: rgba(124, 58, 237, 0.1); color: var(--link-color);
+	border-color: var(--link-color);
+}
+
+/* --- Input & Textarea Styles --- */
+input[type="text"], input[type="password"], textarea {
+	width: 100%; padding: 0.8rem 1rem; background: var(--input-bg);
+	border: 1px solid var(--border-color); border-radius: 8px;
+	color: var(--text-color); font-family: inherit; font-size: 1rem;
+	line-height: 1.5; box-sizing: border-box;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+	outline: none; border-color: var(--primary-accent);
+	box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+textarea { resize: none; overflow-y: hidden; min-height: 48px; }
+::placeholder { color: var(--text-color-secondary); opacity: 0.8; }
+
+/* ======================================== */
+/* CHAT PAGE STYLES (/chat.html)          */
+/* ======================================== */
+
+/* --- Settings Button (Fixed) --- */
+#settingsButton {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Changed from no border-radius */
+    text-decoration: none;
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+#settingsButton:hover {
+    background: rgba(31, 41, 55, 0.8);
+    color: var(--text-color);
+    border-color: var(--primary-accent);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+[data-theme="light"] #settingsButton {
+	background: var(--card-bg); color: var(--text-color-secondary);
+	border: 1px solid var(--border-color);
+}
+[data-theme="light"] #settingsButton:hover {
+	background: rgba(255, 255, 255, 0.95); color: var(--text-color);
+	border-color: var(--primary-accent);
+}
+
+/* --- Home Button (Fixed) --- */
+#homeButton {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+#homeButton:hover {
+    background: rgba(31, 41, 55, 0.8);
+    color: var(--text-color);
+    border-color: var(--primary-accent);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+[data-theme="light"] #homeButton {
+    background: var(--card-bg);
+    color: var(--text-color-secondary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="light"] #homeButton:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text-color);
+    border-color: var(--primary-accent);
+}
+
+/* --- Chat Layout (Desktop First) --- */
+.chat-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* width: is now set by JS for desktop */
+    max-width: 1400px; /* Keep a max-width limit */
+    margin: 0 auto; /* Center the container */
+    padding: 5rem 0 8rem 0;
+    height: calc(100vh - 120px);
+    box-sizing: border-box;
+}
+
+/* Remove or comment out these conflicting rules */
+/* .container,
+.chat-container,
+.input-container {
+    max-width: clamp(320px, 95vw, 1200px);
+    width: 100%;
+    box-sizing: border-box;
+} */
+
+#emptyChat {
+    text-align: center;
+    color: var(--text-color-secondary);
+    font-size: 1.1rem;
+    margin-top: 35vh;
+    opacity: 0.8;
+}
+
+/* --- Message Styles --- */
+.message {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem; /* Reduced side padding */
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.message.user {
+    justify-content: flex-end;
+    padding-left: 15%;
+}
+
+.message.bot {
+    justify-content: flex-start;
+    padding-right: 15%;
+}
+
+.message-bubble {
+    max-width: 100%;
+    padding: 1.2rem 1.6rem;
+    border-radius: 1rem;
+    line-height: 1.6;
+    font-size: 1rem;
+    letter-spacing: 0.2px;
+}
+
+.message.user .message-bubble {
+    background: var(--accent-gradient);
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2);
+}
+
+.message.bot .message-bubble {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 0.25rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.message-bubble img { max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 0.75rem; display: block; border: 1px solid var(--border-color); }
+/* Hr within user bubble */
+.message.user .message-bubble hr { background-color: rgba(255, 255, 255, 0.3); margin: 0.6rem 0; border: none; height: 1px; }
+
+/* Adjust paragraph spacing within messages */
+.message-bubble p {
+    margin-bottom: 1.2rem; /* Space between paragraphs */
+    margin-top: 0;
+}
+
+.message-bubble p:last-child {
+    margin-bottom: 0; /* Remove margin from last paragraph */
+}
+
+/* --- Floating Input Area --- */
+.input-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1400px, calc(100% - 2rem)); /* This remains the reference width */
+    padding: 1.2rem;
+    background: var(--input-bg);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.input-wrapper { 
+    display: flex; /* Changed from grid to flex */
+    align-items: flex-end; 
+    gap: 1rem; 
+    box-sizing: border-box; 
+}
+
+.input-wrapper textarea {
+    flex: 1; /* Allow textarea to grow */
+    min-height: 48px;
+}
+
+/* --- Image Upload Button & Preview --- */
+.image-upload-wrapper { flex-shrink: 0; }
+.image-upload-button { /* Label styled as button */
+	/* Apply secondary styles */
+	background: transparent; border: 1px solid var(--primary-accent);
+	color: var(--primary-accent); text-shadow: none;
+	border-radius: 12px; padding: 0.7rem; font-size: 1.2rem;
+	cursor: pointer; transition: all 0.3s ease; display: flex;
+	align-items: center; justify-content: center; line-height: 1;
+	height: 48px; width: 48px; box-sizing: border-box;
+}
+.image-upload-button:hover {
+	background: rgba(124, 58, 237, 0.1); transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+	color: var(--link-color); border-color: var(--link-color);
+}
+#imagePreviewContainer {
+	display: none; position: absolute; bottom: calc(100% + 0.75rem); left: 1.5rem;
+	max-width: 150px; background: var(--input-bg); padding: 0.5rem;
+	border-radius: 12px; border: 1px solid var(--border-color);
+	box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 11;
+}
+#imagePreviewContainer:has(img) { display: block; }
+#imagePreviewContainer:empty { display: none; }
+#imagePreviewContainer img { max-width: 100%; height: auto; border-radius: 8px; display: block; }
+#removeImageButton {
+	position: absolute; top: -10px; right: -10px;
+	background-color: rgba(230, 50, 50, 0.9); color: white;
+	border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%;
+	width: 24px; height: 24px; font-size: 13px; font-weight: bold;
+	line-height: 22px; text-align: center; cursor: pointer;
+	transition: all 0.2s ease; padding: 0; z-index: 12;
+}
+#removeImageButton:hover { background-color: #ff3333; transform: scale(1.1); }
+
+/* --- Send/Stop Buttons --- */
+.button-group { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+#sendButton {
+	/* Apply primary styles */
+	background: var(--accent-gradient); background-size: 200% 100%;
+	background-position: right bottom; border: none; color: white;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	/* Animation specific */
+	gap: 0.5rem; position: relative; overflow: hidden;
+    /* *** FIX: Added padding to transition *** */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-position 0.3s ease, padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#sendButton:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25);
+	background-position: left bottom;
+	text-decoration: none;
+}
+/* Send button hover animation text/arrow */
+#sendButton span { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
+#sendButton:not(:disabled):hover { padding-right: 2.5rem; } /* This triggers size change */
+#sendButton:not(:disabled):hover span:first-child { transform: translateX(-150%); opacity: 0; }
+#sendButton:not(:disabled):hover span:last-child { transform: translateX(-100%); opacity: 0; }
+#sendButton::after { content: "→"; position: absolute; right: -2rem; top: 50%; transform: translateY(-50%); opacity: 0; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.5rem; font-weight: bold; line-height: 1; }
+#sendButton:not(:disabled):hover::after { right: 0.8rem; opacity: 1; }
+
+#stopButton {
+    /* Apply secondary-like style but distinct */
+    background: #dc2626;
+    color: white;
+    border: 1px solid #dc2626;
+    min-width: 100px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+    text-shadow: none;
+    opacity: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease, opacity 0.2s ease;
+}
+#stopButton:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: transparent; /* Hide text on hover */
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    transform: translateY(-1px);
+}
+#stopButton::before {
+    content: '⬛';
+    position: absolute;
+    font-size: 14px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white; /* Ensure the square is white */
+}
+#stopButton:hover::before {
+    opacity: 1;
+}
+
+/* --- Thinking Indicator / Spinner Styles --- */
+#thinking { display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-color-secondary); opacity: 0.8; margin: 1.5rem 0; font-size: 0.9rem; min-height: 24px; }
+#thinking:empty { display: none; margin: 0; min-height: 0; }
+@keyframes dots { 0%, 20% { content: ""; } 40% { content: "."; } 60% { content: ".."; } 80% { content: "..."; } 100% { content: ""; } }
+.thinking-dots::after { content: ""; display: inline-block; width: 1.5em; text-align: left; animation: dots 1.5s infinite; }
+
+#loadingSpinner {
+	background-image: linear-gradient(var(--primary-accent) 35%, var(--secondary-accent));
+	width: 50px; height: 50px; animation: spinning82341 1.7s linear infinite;
+	border-radius: 50%; filter: blur(1px);
+	box-shadow: 0px -4px 15px 0px var(--primary-accent), 0px 4px 15px 0px var(--secondary-accent);
+	position: relative; margin: 1rem auto 1.5rem auto;
+}
+#loadingSpinner::before {
+	content: ""; background-color: var(--bg-color); width: 40px; height: 40px;
+	border-radius: 50%; filter: blur(6px); position: absolute; top: 5px; left: 5px;
+}
+@keyframes spinning82341 { to { transform: rotate(360deg); } }
+
+/* --- Code Block Styles --- */
+.code-block { 
+    position: relative; 
+    margin: 1.5rem 0; /* Increased margin */
+    background-color: var(--code-bg); 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color); 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); 
+    overflow: hidden; 
+}
+.code-block pre { margin: 0; padding: 1.5rem 1rem 1rem 1rem; background-color: transparent; border: none; box-shadow: none; color: var(--text-color); overflow-x: auto; white-space: pre; font-size: 0.9rem; line-height: 1.6; }
+.code-block code, pre code { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; white-space: pre; font-size: inherit; background: none; padding: 0; }
+.copy-button { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; padding: 5px 10px !important; font-size: 13px !important; color: var(--text-color) !important; cursor: pointer; border-radius: 6px; z-index: 1; opacity: 0.7; transition: all 0.2s ease; }
+.copy-button:hover { background: rgba(255, 255, 255, 0.2) !important; opacity: 1; }
+.copy-button.copied { background: var(--success-bg) !important; border-color: var(--success-color) !important; color: var(--success-color) !important; opacity: 1; }
+[data-theme="light"] .copy-button { background: rgba(0, 0, 0, 0.05) !important; border: 1px solid rgba(0, 0, 0, 0.1) !important; color: var(--text-color) !important; }
+[data-theme="light"] .copy-button:hover { background: rgba(0, 0, 0, 0.1) !important; }
+[data-theme="light"] .copy-button.copied { background: var(--success-bg) !important; border-color: var(--success-color) !important; color: var(--success-color) !important; }
+
+/* --- Error Message Style --- */
+.error-message { color: var(--error-color); background-color: var(--error-bg); border: 1px solid var(--error-border); padding: 0.8rem 1.2rem; border-radius: 8px; margin: 1rem auto; max-width: 80%; text-align: center; }
+
+/* --- Message Animation --- */
+@keyframes messagePopIn { 0% { opacity: 0; transform: scale(0.8) translateY(10px); } 80% { transform: scale(1.03) translateY(-2px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* --- Inline Code Styles --- */
+.inline-code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 3px 6px; /* Increased padding */
+    margin: 0 2px; /* Added horizontal spacing */
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+[data-theme='dark'] .inline-code {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ======================================== */
+/* SETTINGS PAGE STYLES (/settings.html)  */
+/* ======================================== */
+
+/* --- Settings Container --- */
+.settings-container {
+    max-width: min(900px, calc(100% - 2rem));
+    margin: 4rem auto 2rem;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* --- Back Button --- */
+.back-button {
+    position: absolute;
+    top: -3rem;
+    left: 0;
+    display: inline-flex;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color-secondary);
+    gap: 0.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--text-color);
+    border-color: var(--primary-accent);
+    transform: translateY(-1px);
+}
+
+/* --- Settings Title --- */
+.settings-container > h1 {
+    font-size: 1.8rem;
+    margin: 0 0 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* --- Setting Groups --- */
+.setting-group {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(124, 58, 237, 0.05);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.setting-group:hover {
+    background: rgba(124, 58, 237, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.setting-group h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.2rem;
+    color: var(--primary-accent);
+    border-bottom: none;
+}
+
+/* --- Setting Items --- */
+.setting-item {
+    margin: 1.5rem 0;
+}
+
+.setting-item label:not(.switch):not([style*="inline-block"]) {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.input-with-button {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.input-with-button input {
+    flex: 1;
+    margin: 0;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .settings-container {
+        margin: 3rem 1rem 1.5rem;
+        padding: 1.5rem 1rem;
+        border-radius: 12px;
+    }
+
+    .back-button {
+        top: -2.5rem;
+    }
+
+    .setting-group {
+        padding: 1.2rem 1rem;
+    }
+
+    .input-with-button {
+        flex-direction: column;
+    }
+
+    .input-with-button button {
+        width: 100%;
+    }
+}
+
+/* Textarea in Settings */
+.settings-container textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+
+/* --- Theme Toggle Switch --- */
+.switch { position: relative; display: inline-block; width: 52px; height: 28px; vertical-align: middle; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--text-color-secondary); opacity: 0.6; border-radius: 28px; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: .4s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+input:checked + .slider { background: var(--accent-gradient); opacity: 1; }
+input:checked + .slider:before { transform: translateX(24px); }
+.setting-item label[style*="inline-block"] { margin-left: 0.75rem; vertical-align: middle; font-size: 0.95rem; color: var(--text-color); }
+
+/* --- Save Settings Button --- */
+/* Target using specific attribute selector and apply primary styles */
+button[onclick="saveSettings()"] {
+	 /* Apply base and primary styles */
+	 display: block; width: 100%; margin-top: 2rem;
+	 padding: 0.875rem 1.5rem;
+	 background: var(--accent-gradient);
+	 background-size: 200% 100%;
+	 background-position: right bottom;
+	 color: white;
+	 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	 border: none;
+}
+button[onclick="saveSettings()"]:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25);
+	background-position: left bottom;
+}
+
+/* --- Toast Notification Styles & Animations (for settings.js) --- */
+/* Optional: Add a class in JS and style it here */
+/* .toast-notification {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--success-color); color: white;
+    padding: 1rem 2rem; border-radius: 8px;
+    z-index: 1000;
+    animation: slideUp 0.3s ease-out, fadeOut 0.3s ease-out 2s forwards;
+} */
+
+/* *** FIX: Added Keyframes *** */
+@keyframes slideUp {
+	from { transform: translate(-50%, 100%); opacity: 0; }
+	to { transform: translate(-50%, 0); opacity: 1; }
+}
+@keyframes fadeOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+/* Responsive container and chat area */
+.container,
+.chat-container,
+.input-container {
+    max-width: clamp(320px, 95vw, 1200px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Responsive font sizes */
+body {
+    font-size: 16px;
+}
+@media (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.1rem; }
+    .chat-container,
+    .container,
+    .input-container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .input-container {
+        padding: 0.7rem 0.5rem;
+        border-radius: 10px;
+    }
+    .message-bubble {
+        padding: 0.8rem 1rem;
+        font-size: 0.97em;
+    }
+    .code-block pre {
+        font-size: 0.85rem;
+        padding: 1rem 0.5rem 0.7rem 0.5rem;
+    }
+}
+
+/* Make input and chat area heights adapt on small screens */
+@media (max-width: 600px) {
+    .chat-container {
+        padding-top: 3.5rem;
+        padding-bottom: 7rem;
+        height: calc(100vh - 110px);
+    }
+    .input-container {
+        bottom: 0.5rem;
+    }
+}
+
+/* Ensure buttons and inputs don't overflow */
+.input-wrapper {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.button-group button,
+.image-upload-button {
+    min-width: 80px;
+    font-size: 0.95em;
+    padding: 0.6rem 1rem;
+}
+
+/* Make code blocks scrollable horizontally on small screens */
+.code-block pre {
+    overflow-x: auto;
+    word-break: break-all;
+}
+
+/* Responsive adjustments for settings page */
+@media (max-width: 600px) {
+    .settings-container {
+        padding: 1rem 0.5rem;
+        border-radius: 10px;
+    }
+    .setting-group {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+}
+
+/* --- IMPROVED MOBILE RESPONSIVENESS --- */
+@media (max-width: 600px) {
+    /* Mobile viewport fixes */
+    html {
+        height: -webkit-fill-available;
+    }
+    
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        height: 100%;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    /* Mobile container adjustments */
+    .chat-container {
+        height: calc(100vh - 120px - env(safe-area-inset-bottom));
+        padding: 3.5rem 0.5rem 5rem 0.5rem;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Mobile input container */
+    .input-container {
+        bottom: max(0.5rem, env(safe-area-inset-bottom));
+        width: calc(100% - 1rem);
+        margin: 0 0.5rem;
+        padding: 0.6rem;
+        border-radius: 12px;
+    }
+
+    /* Improve message bubbles on mobile */
+    .message {
+        max-width: 90%;
+        margin-bottom: 1rem;
+    }
+    
+    .message-bubble {
+        max-width: 100%;
+        padding: 0.8rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* Better button layout for mobile */
+    .input-wrapper {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.5rem;
+        align-items: flex-end;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 0.3rem;
+    }
+
+    #sendButton, #stopButton {
+        min-width: unset;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* Mobile header buttons */
+    #settingsButton, #homeButton {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.7rem;
+        top: env(safe-area-inset-top, 0.5rem);
+    }
+
+    /* Code blocks on mobile */
+    .code-block {
+        border-radius: 8px;
+        margin: 0.5rem -0.5rem;
+    }
+
+    .code-block pre {
+        padding: 1rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* Image adjustments for mobile */
+    .message-bubble img {
+        max-height: 200px;
+        width: auto;
+        margin: 0.5rem auto;
+    }
+}
+
+/* Additional adjustments for very small screens */
+@media (max-width: 380px) {
+    .message {
+        max-width: 95%;
+    }
+    
+    .input-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-group {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    #sendButton, #stopButton {
+        flex: 1;
+    }
+}
+
+/* Handle landscape mode */
+@media (max-height: 500px) and (orientation: landscape) {
+    .chat-container {
+        height: calc(100vh - 80px);
+        padding-top: 3rem;
+    }
+    
+    .input-container {
+        padding: 0.4rem;
+    }
+    
+    #userInput {
+        max-height: 80px;
+    }
+}
+
+/* --- IMPROVED MOBILE RESPONSIVENESS --- */
+@media (max-width: 600px) {
+    html, body {
+        min-width: 0;
+        width: 100vw;
+        overflow-x: hidden;
+    }
+    body {
+        font-size: 15px;
+        padding: 0;
+        margin: 0;
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+    .container,
+    .chat-container,
+    .input-container {
+        max-width: 100vw;
+        width: 100vw;
+        min-width: 0;
+        box-sizing: border-box;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .chat-container {
+        padding-top: 2.5rem;
+        padding-bottom: 6rem;
+        height: calc(100vh - 90px);
+        min-height: 0;
+    }
+    .input-container {
+        padding: 0.6rem 0.5rem;
+        border-radius: 8px;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        max-width: 100vw;
+        min-width: 0;
+    }
+    .input-wrapper {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    .message {
+        max-width: 100%;
+    }
+    .message-bubble {
+        padding: 0.7rem 0.7rem;
+        font-size: 1em;
+        word-break: break-word;
+        max-width: 95vw;
+    }
+    .code-block pre {
+        font-size: 0.85rem;
+        padding: 0.7rem 0.4rem 0.6rem 0.4rem;
+        max-width: 92vw;
+    }
+    .code-block {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+        max-width: 100vw;
+        overflow-x: auto;
+    }
+    .button-group button,
+    .image-upload-button {
+        min-width: 70px;
+        font-size: 0.95em;
+        padding: 0.5rem 0.7rem;
+    }
+    #settingsButton, #homeButton {
+        top: 0.5rem;
+        left: 0.5rem;
+        right: auto;
+        padding: 0.4rem 0.7rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+    #homeButton {
+        left: auto;
+        right: 0.5rem;
+    }
+    .settings-container {
+        padding: 0.7rem 0.3rem;
+        border-radius: 8px;
+        max-width: 100vw;
+    }
+    .setting-group {
+        padding: 0.7rem;
+        border-radius: 6px;
+    }
+    .message-bubble img {
+        max-width: 90vw;
+        max-height: 160px;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Fix viewport scaling */
+    .chat-container {
+        height: calc(100vh - 80px);
+        max-width: 100%;
+        width: 100%;
+        padding: 3.5rem 0.75rem 6rem 0.75rem;
+    }
+
+    /* Improve input container layout */
+    .input-container {
+        bottom: 0.5rem;
+        width: calc(100% - 1rem);
+        padding: 0.5rem;
+        border-radius: 12px;
+        background-color: var(--input-bg);
+    }
+
+    /* Better input wrapper layout */
+    .input-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    /* Adjust input sizing */
+    #userInput {
+        font-size: 16px; /* Prevent zoom on iOS */
+        padding: 8px 12px;
+        min-height: 40px;
+    }
+
+    /* Improve button layout */
+    .button-group {
+        display: flex;
+        gap: 8px;
+    }
+
+    #sendButton, #stopButton {
+        padding: 8px 16px;
+        min-width: 60px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .image-upload-button {
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+        font-size: 1.1rem;
+    }
+
+    /* Adjust message bubbles */
+    .message {
+        max-width: 85%;
+    }
+
+    .message-bubble {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    /* Scale down code blocks */
+    .code-block {
+        font-size: 0.85rem;
+        margin: 0.5rem 0;
+    }
+
+    .code-block pre {
+        padding: 0.75rem;
+    }
+}
+
+/* Additional fixes for extra small screens */
+@media (max-width: 380px) {
+    .chat-container {
+        padding: 3.5rem 0.5rem 5rem 0.5rem;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+
+    .message-bubble {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    #sendButton, #stopButton {
+        padding: 8px 12px;
+        min-width: 50px;
+    }
+}
+
+/* Mobile-first responsive styles */
+@media (max-width: 768px) {
+    .input-container {
+        bottom: max(env(safe-area-inset-bottom), 0.5rem);
+        width: calc(100% - 1rem);
+        margin: 0 0.5rem;
+        padding: 0.75rem;
+        border-radius: 16px;
+    }
+    
+    .input-wrapper {
+        gap: 8px;
+    }
+
+    #userInput {
+        font-size: 16px;
+        padding: 8px;
+    }
+
+    .button-group button {
+        padding: 8px 16px;
+        min-height: 44px;
+    }
+
+    .image-upload-button {
+        width: 44px;
+        height: 44px;
+        padding: 10px;
+    }
+}
+
+/* Adjustments for very small screens */
+@media (max-width: 380px) {
+    .input-container {
+        padding: 0.5rem;
+    }
+    
+    .button-group button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 500px) {
+    .input-container {
+        position: sticky;
+        bottom: 0;
+    }
+    
+    #userInput {
+        max-height: 80px;
+    }
+}
+
+/* General container and chat area responsive fixes */
+.chat-container {
+    height: calc(100vh - var(--input-height, 80px));
+    padding-bottom: calc(var(--input-height, 80px) + 2rem);
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        --input-height: 60px;
+        padding: 1rem 0.5rem calc(var(--input-height) + 1rem) 0.5rem;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+    
+    .message-bubble {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* --- Responsive Adjustments for Larger Screens --- */
+
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 600px) {
+    .chat-container {
+        width: calc(100% - 1rem);
+        padding: 3.5rem 0.5rem 5rem 0.5rem;
+    }
+
+    .input-container {
+        width: calc(100% - 1rem);
+        bottom: 0.5rem;
+        padding: 0.7rem;
+        border-radius: 10px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* --- Responsive Adjustments --- */
+
+/* Remove specific large screen padding overrides if they conflict */
+/* @media (min-width: 900px) { ... } */ /* Commented out or removed if not needed */
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 1240px) { /* Adjust breakpoint slightly larger than max-width */
+    .input-container {
+        width: calc(100% - 3rem); /* Add side spacing when container hits viewport edge */
+    }
+}
+
+@media (max-width: 600px) {
+    .chat-container {
+        padding: 3.5rem 0.5rem 5rem 0.5rem; /* Mobile padding */
+        max-width: 100%; /* Use full width */
+    }
+
+    .input-container {
+        width: calc(100% - 1rem); /* Mobile width */
+        max-width: 100%; /* Override desktop max-width */
+        bottom: 0.5rem;
+        left: 0.5rem; /* Position from left */
+        right: 0.5rem; /* Position from right */
+        transform: none; /* Remove centering transform */
+        padding: 0.7rem;
+        border-radius: 10px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .message.user,
+    .message.bot {
+        padding-left: 0; /* Remove desktop padding */
+        padding-right: 0;
+    }
+    .message-bubble {
+        max-width: 90%; /* Limit bubble width on mobile */
+    }
+}
+
+/* Model Selector Styles - Enhanced Version */
+.model-selector-wrapper {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 240px;
+}
+
+.model-selector-container {
+  position: relative;
+  width: 100%;
+  background: rgb(32, 33, 35);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.model-selector-container:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.model-selector-header {
+  padding: 10px 14px 3px 14px;
+}
+
+.model-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.model-selector-display {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 12px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.model-selector-container.open .model-selector-display,
+.model-selector-display:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.model-selector-arrow {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  margin-left: 8px;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.model-selector-arrow::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.model-selector-container.open .model-selector-arrow::after {
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+
+.model-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: rgb(32, 33, 35);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.3, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.model-selector-container.open .model-dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.model-dropdown-option {
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.model-dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.model-dropdown-option:hover,
+.model-dropdown-option.selected {
+  background: var(--accent-gradient);
+}
+
+.model-name {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.model-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.model-dropdown-option:hover .model-description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+  .model-selector-wrapper {
+    width: 200px;
+  }
+  
+  .model-selector-header {
+    padding: 8px 12px 2px 12px;
+  }
+  
+  .model-selector-display {
+    padding: 6px 12px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .model-dropdown-option {
+    padding: 10px 12px;
+  }
+  
+  .model-name {
+    font-size: 0.9rem;
+  }
+  
+  .model-description {
+    font-size: 0.75rem;
+  }
+}
+
+/* --- Custom Model Selector (ChatGPT-inspired) --- */
+.model-selector-wrapper {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 260px;
+  max-width: 90vw;
+}
+
+.model-selector-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 0;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.model-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color-secondary);
+  padding: 0 0 0 14px;
+  font-weight: 600;
+}
+
+.model-selector-display {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+}
+
+.model-selector-arrow {
+  transition: transform 0.25s ease;
+}
+
+.model-selector-container.open .model-selector-arrow {
+  transform: rotate(-180deg);
+}
+
+.model-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-top: none;
+  animation: fadeIn 0.2s ease-out;
+  z-index: 10;
+}
+
+.model-selector-container.open .model-dropdown {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.model-dropdown-option {
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--text-color);
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.model-dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.model-dropdown-option:hover,
+.model-dropdown-option.selected {
+  background: linear-gradient(90deg, rgba(124,58,237,0.2), rgba(37,99,235,0.2));
+  color: #fff;
+}
+
+.model-dropdown-description {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .model-selector-wrapper {
+    width: 98vw;
+    left: 1vw;
+    transform: none;
+    top: 0.8rem;
+  }
+  .model-label,
+  .model-selector-display,
+  .model-dropdown-option {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}</style>
+</head>
+<body>
+  <a href="index.html" id="homeButton">🏠 <span class="button-text">Home</span></a>
+  <a href="settings.html" id="settingsButton">⚙️ <span class="button-text">Settings</span></a>
+
+  <div class="model-selector-wrapper">
+    <div class="model-selector-container">
+      <div class="model-selector-header">
+        <div class="model-label">Model</div>
+      </div>
+      <button class="model-selector-display">
+        <span>2.5 Pro</span>
+        <div class="model-selector-arrow"></div>
+      </button>
+      <div class="model-dropdown">
+        <div class="model-dropdown-option" data-model="gemini-2.5-pro">
+          <div class="model-name">2.5 Pro</div>
+          <div class="model-description">Most advanced, best for complex tasks</div>
+        </div>
+        <div class="model-dropdown-option" data-model="gemini-2.5-flash">
+          <div class="model-name">2.5 Flash</div>
+          <div class="model-description">Latest model, thinks deep</div>
+        </div>
+        <div class="model-dropdown-option" data-model="gemini-2.0-flash">
+          <div class="model-name">2.0 Flash</div>
+          <div class="model-description">Fast responses, more than enough</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-container" id="chatArea">
+    <div id="emptyChat">Start a conversation!</div>
+  </div>
+
+  <div class="input-container">
+    <div class="input-wrapper">
+      <div class="input-controls-left">
+        <label class="image-upload-wrapper">
+          <input type="file" id="imageInput" accept="image/*" style="display: none;">
+          <div class="image-upload-button">📎</div> 
+        </label>
+      </div>
+      <textarea id="userInput" rows="1" placeholder="Type your message..."></textarea>
+      <div class="input-controls-right">
+        <div class="button-group">
+          <button id="sendButton" type="button" onclick="sendMessage()">Send</button>
+          <button id="stopButton" type="button">Stop</button>
+        </div>
+      </div>
+    </div>
+    <div id="imagePreviewContainer"></div>
+  </div>
+
+<script>let selectedModel = localStorage.getItem('selectedModel') || 'gemini-2.0-flash';
+ 
+ document.addEventListener('DOMContentLoaded', () => {
+     // --- Theme Setup ---
+     const theme = localStorage.getItem('theme') || 'dark';
+     document.documentElement.setAttribute('data-theme', theme);
+ 
+     // --- Element References ---
+     // Ensure elements are fetched *after* DOM is loaded
+     const userInput = document.getElementById("userInput");
+     const imageInput = document.getElementById('imageInput');
+     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+     const settingsButton = document.getElementById('settingsButton');
+     const settingsModal = document.getElementById('settingsModal');
+     const modalBackdrop = document.getElementById('modalBackdrop');
+     const apiKeyInput = document.getElementById('apiKeyInput');
+ 
+     // Ensure chatArea has proper styles for scrolling
+     const chatArea = document.getElementById("chatArea");
+     if (chatArea) {
+         chatArea.style.overflowY = 'auto'; // Enable vertical scrolling
+         chatArea.style.maxHeight = '100%'; // Ensure it can grow with content
+     }
+ 
+     // Model selector listener
+     const modelSelector = document.getElementById('modelSelector');
+     if (modelSelector) {
+         // Set initial value
+         modelSelector.value = selectedModel;
+ 
+         modelSelector.addEventListener('change', (e) => {
+             const container = e.target.closest('.model-selector-container');
+ 
+             // Add loading state
+             if (container) {
+                 container.style.opacity = '0.7';
+                 container.style.pointerEvents = 'none';
+             }
+ 
+             // Update model with slight delay for animation
+             setTimeout(() => {
+                 selectedModel = e.target.value;
+                 localStorage.setItem('selectedModel', selectedModel);
+ 
+                 // Reset container state
+                 if (container) {
+                     container.style.opacity = '1';
+                     container.style.pointerEvents = 'auto';
+                     container.classList.add('model-changed');
+                     setTimeout(() => container.classList.remove('model-changed'), 400);
+                 }
+             }, 200);
+         });
+     }
+ 
+     // --- Event Listeners ---
+ 
+     // Send message on Enter (but not Shift+Enter)
+     if (userInput) {
+         userInput.addEventListener("keydown", (event) => {
+             if ((event.key === "Enter" || event.keyCode === 13 || event.which === 13) && !event.shiftKey) {
+                 event.preventDefault(); // Prevent default newline on Enter
+                 if (!isThinking) { // Prevent sending while processing
+                     sendMessage();
+                 }
+             }
+         });
+ 
+         // Auto-resize Textarea Logic
+         function autoResizeTextarea() {
+             if (!userInput) return; // Safety check
+             userInput.style.height = 'auto'; // Reset height
+             const newHeight = userInput.scrollHeight;
+             const maxHeight = 200; // Match CSS max-height if set
+ 
+             if (newHeight > maxHeight) {
+                 userInput.style.height = `${maxHeight}px`;
+                 userInput.style.overflowY = 'auto'; // Show scrollbar
+             } else {
+                 userInput.style.height = `${newHeight}px`;
+                 userInput.style.overflowY = 'hidden'; // Hide scrollbar
+             }
+         }
+ 
+         // Listener for textarea input
+         userInput.addEventListener('input', autoResizeTextarea);
+     }
+ 
+     // Image selection listener
+     if (imageInput) {
+         imageInput.addEventListener('change', handleImageSelect);
+     }
+ 
+     // Settings Modal listeners (if elements exist)
+     if (settingsButton && settingsModal && modalBackdrop && apiKeyInput) {
+         settingsButton.onclick = () => {
+             settingsModal.style.display = 'block';
+             modalBackdrop.style.display = 'block';
+             apiKeyInput.value = localStorage.getItem('geminiApiKey') || ''; // Ensure latest key is shown
+         }
+ 
+         modalBackdrop.onclick = () => {
+             settingsModal.style.display = 'none';
+             modalBackdrop.style.display = 'none';
+         }
+     }
+ 
+     // Chat area scroll listener for manual scroll detection
+     if (chatArea) {
+         chatArea.addEventListener('scroll', () => {
+             // Update flag: if view is within bottomThreshold pixels, we treat user as at bottom.
+             isUserAtBottom = (chatArea.scrollTop + chatArea.clientHeight + bottomThreshold >= chatArea.scrollHeight);
+             console.log("isUserAtBottom:", isUserAtBottom);
+         });
+     }
+ 
+     // Add send button click handler
+     const sendButton = document.getElementById('sendButton');
+     if (sendButton) {
+         sendButton.addEventListener('click', () => {
+             if (!isThinking) {
+                 sendMessage();
+             }
+         });
+     }
+ 
+     // Add stop button listener
+     if (stopButton) {
+         stopButton.addEventListener('click', stopResponse);
+         stopButton.style.display = 'none'; // Ensure hidden by default
+     }
+ 
+     // Update the event listener in DOMContentLoaded
+     window.addEventListener('modelChange', (event) => {
+         const newModel = event.detail.model;
+         selectedModel = newModel;
+         localStorage.setItem('selectedModel', newModel);
+         console.log(`Model changed to: ${newModel}`);
+     });
+ 
+     // Update the model display on page load
+     const displayText = document.querySelector('.model-selector-display span');
+     const options = document.querySelectorAll('.model-dropdown-option');
+ 
+     if (displayText && options) {
+         // Find the option matching the selected model
+         const selectedOption = Array.from(options).find(
+             opt => opt.dataset.model === selectedModel
+         );
+ 
+         if (selectedOption) {
+             const modelName = selectedOption.querySelector('.model-name').textContent;
+             displayText.textContent = modelName;
+             // biome-ignore lint/complexity/noForEach: <explanation>
+             options.forEach(opt => opt.classList.remove('selected'));
+             selectedOption.classList.add('selected');
+         }
+     }
+ }); // End DOMContentLoaded
+ 
+ // --- Global Variables & State ---
+ const userInput = document.getElementById("userInput"); // May need reassignment if accessed outside DOMContentLoaded
+ const chatArea = document.getElementById("chatArea");
+ const sendButton = document.getElementById("sendButton");
+ const stopButton = document.getElementById("stopButton");
+ let isThinking = false;
+ const conversationHistory = [];
+ let controller = null;
+ const lastScrollPosition = 0;
+ let apiKey = localStorage.getItem('geminiApiKey') || '';
+ const selectedImageData = { base64: null, mimeType: null };
+ let isUserAtBottom = true;
+ const bottomThreshold = 50; // adjust threshold as needed
+ 
+ // --- Helper Functions ---
+ 
+ // Updated isAtBottom to use a threshold of 20px
+ function isAtBottom() {
+     if (!chatArea) return true;
+     return (chatArea.scrollTop + chatArea.clientHeight) >= (chatArea.scrollHeight - 20);
+ }
+ 
+ function scrollToBottom(force = false) {
+     if (!chatArea) return;
+     console.log("scrollToBottom called. isUserAtBottom:", isUserAtBottom);
+     // Scroll if forced or if user is near the bottom
+     if (force || isUserAtBottom) {
+         window.requestAnimationFrame(() => {
+             chatArea.scrollTop = chatArea.scrollHeight;
+             console.log("Scrolled to bottom. Current scrollTop:", chatArea.scrollTop);
+         });
+     }
+ }
+ 
+ function escapeHtml(text) {
+     if (!text) return "";
+     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+     return text.replace(/[&<>"']/g, m => map[m]);
+ }
+ 
+ // Helper function to clean potential role prefixes
+ function cleanMessageContent(content) {
+     if (!content) return ""; // Handle null/undefined input
+     let cleanedContent = content.trim();
+     const prefixes = ["model: ", "model:", "user: ", "user:"];
+     let prefixFound;
+     do {
+         prefixFound = false;
+         for (const prefix of prefixes) {
+             if (cleanedContent.toLowerCase().startsWith(prefix)) {
+                 cleanedContent = cleanedContent.substring(prefix.length).trimStart();
+                 prefixFound = true;
+                 break;
+             }
+         }
+     } while (prefixFound);
+     return cleanedContent;
+ }
+ 
+ // Image Handling
+ function handleImageSelect(event) {
+     const file = event.target.files[0];
+     const imagePreviewContainer = document.getElementById('imagePreviewContainer'); // Ensure this exists
+     if (!imagePreviewContainer) return;
+ 
+     if (file?.type.startsWith('image/')) {
+         const reader = new FileReader();
+         reader.onload = (e) => {
+             const base64StringWithPrefix = e.target.result;
+             selectedImageData.base64 = base64StringWithPrefix.split(',')[1];
+             selectedImageData.mimeType = file.type;
+             imagePreviewContainer.innerHTML = ''; // Clear previous preview
+             const img = document.createElement('img');
+             img.src = base64StringWithPrefix;
+             img.id = 'imagePreview';
+             imagePreviewContainer.appendChild(img);
+             const removeButton = document.createElement('button');
+             removeButton.id = 'removeImageButton';
+             removeButton.textContent = '✕';
+             removeButton.onclick = clearSelectedImage;
+             imagePreviewContainer.appendChild(removeButton);
+         }
+         reader.readAsDataURL(file);
+     } else {
+         clearSelectedImage();
+         if (file) {
+            alert("Please select a valid image file.");
+         }
+     }
+      if(event.target) event.target.value = null; // Reset file input
+ }
+ 
+ function clearSelectedImage() {
+     selectedImageData.base64 = null;
+     selectedImageData.mimeType = null;
+     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+     if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+     const imageInput = document.getElementById('imageInput');
+     if(imageInput) imageInput.value = null;
+ }
+ 
+ // Copy to Clipboard
+ async function copyToClipboard(text, button) {
+     if (!button) return;
+     try {
+         await navigator.clipboard.writeText(text);
+         button.textContent = 'Copied!';
+         button.classList.add('copied');
+         setTimeout(() => {
+             // Check if button still exists before trying to modify it
+             if (document.body.contains(button)) {
+                 button.textContent = 'Copy code';
+                 button.classList.remove('copied');
+             }
+         }, 2000);
+     } catch (err) {
+         console.error('Failed to copy code:', err);
+          if (document.body.contains(button)) {
+             button.textContent = 'Error';
+             setTimeout(() => {
+                  if (document.body.contains(button)) {
+                     button.textContent = 'Copy code';
+                  }
+             }, 2000);
+          }
+     }
+ }
+ 
+ function attachCopyListeners() {
+     if (!chatArea) return;
+     // More robust selector in case messages get deleted/reordered quickly
+     const lastBotMessage = chatArea.querySelector('.message.bot:last-child');
+     if (!lastBotMessage) return;
+ 
+     const codeBlocks = lastBotMessage.querySelectorAll('.code-block');
+     // biome-ignore lint/complexity/noForEach: <explanation>
+     codeBlocks.forEach(block => {
+         const button = block.querySelector('.copy-button');
+         const code = block.querySelector('code');
+         // Prevent adding multiple listeners if function is called rapidly
+         if (button && code && !button.hasAttribute('data-listener-attached')) {
+             button.onclick = () => copyToClipboard(code.innerText, button);
+             button.setAttribute('data-listener-attached', 'true');
+         }
+     });
+ }
+ 
+ 
+ // Format Bot Response (Markdown, Code Blocks)
+ function formatResponse(responseText) {
+     const codeBlocks = {};
+     let counter = 0;
+     let processedText = responseText;
+ 
+     // Handle code blocks first (store escaped content)
+     processedText = processedText.replace(/```([\w-]+)?\n([\s\S]*?)```/g, (match, language, code) => {
+         const marker = `@@CODEBLOCK${counter}@@`;
+         const escapedCode = escapeHtml(code.trimEnd());
+         codeBlocks[marker] = `
+             <div class="code-block">
+                 <pre><code class="language-${language || 'plaintext'}">${escapedCode}</code></pre>
+                 <button class="copy-button" type="button">Copy code</button>
+             </div>`;
+         counter++;
+         return marker;
+     });
+ 
+     // Handle inline code next (store escaped content)
+     processedText = processedText.replace(/`([^`]+)`/g, (match, code) => {
+         const marker = `@@INLINECODE${counter}@@`;
+         const escapedCode = escapeHtml(code);
+         codeBlocks[marker] = `<code class="inline-code">${escapedCode}</code>`;
+         counter++;
+         return marker;
+     });
+ 
+     // Process the text in parts, preserving code blocks and inline code
+     const parts = processedText.split(/(@@(?:CODEBLOCK|INLINECODE)\d+@@)/g);
+     let finalHtml = "";
+ 
+     for (const part of parts) {
+         if (part in codeBlocks) {
+             // If it's a marker, add the corresponding code block (already escaped)
+             finalHtml += codeBlocks[part];
+         } else if (part) {
+             // Otherwise escape HTML for regular text
+             let escapedPart = escapeHtml(part).replace(/\n/g, '<br>');
+ 
+             // Allow specific safe tags for math/formatting *after* escaping
+             escapedPart = escapedPart.replace(/&lt;sup&gt;/g, '<sup>').replace(/&lt;\/sup&gt;/g, '</sup>');
+             escapedPart = escapedPart.replace(/&lt;sub&gt;/g, '<sub>').replace(/&lt;\/sub&gt;/g, '</sub>');
+             // You could add more safe tags here if needed (e.g., <i>, <b>)
+             // escapedPart = escapedPart.replace(/&lt;i&gt;/g, '<i>').replace(/&lt;\/i&gt;/g, '</i>');
+             // escapedPart = escapedPart.replace(/&lt;b&gt;/g, '<b>').replace(/&lt;\/b&gt;/g, '</b>');
+ 
+             finalHtml += escapedPart;
+         }
+     }
+ 
+     // Apply markdown formatting (Bold/Italic) - This should not affect escaped code
+     // Note: Ensure markdown doesn't conflict with the allowed HTML tags.
+     // Applying markdown after re-inserting safe HTML might be safer.
+     finalHtml = finalHtml.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+     finalHtml = finalHtml.replace(/\*(.*?)\*/g, '<em>$1</em>');
+ 
+ 
+     return finalHtml;
+ }
+ 
+ 
+ // --- Core API Interaction ---
+ 
+ function stopResponse() {
+     if (controller) {
+         controller.abort();
+         controller = null;
+ 
+         // Add the stopped message to the last bot message
+         const lastBotMessage = document.querySelector('.message.bot:last-child .message-bubble');
+         if (lastBotMessage) {
+             lastBotMessage.innerHTML += `<p style='color: var(--text-color-secondary); font-style: italic; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);'>Response stopped by user</p>`;
+         }
+     }
+ 
+     const stopButton = document.getElementById('stopButton');
+     const sendButton = document.getElementById('sendButton');
+ 
+     if (stopButton) stopButton.style.display = 'none';
+     if (sendButton) {
+         sendButton.style.display = 'flex';
+         sendButton.disabled = false;
+     }
+ 
+     isThinking = false;
+ }
+ 
+ async function sendMessage() {
+     // --- Get Fresh Element References ---
+     const currentInputElement = document.getElementById("userInput");
+     const currentSendButton = document.getElementById("sendButton");
+     const currentStopButton = document.getElementById("stopButton");
+     const currentChatArea = document.getElementById("chatArea");
+ 
+     // Ensure elements exist using the fresh references
+     if (!currentInputElement || !currentSendButton || !currentStopButton || !currentChatArea) {
+         console.error("Required chat elements not found when trying to send message.");
+         // Optionally alert the user
+         // alert("Error: Could not find essential chat components. Please reload.");
+         return;
+     }
+ 
+     // Use the fresh references throughout the function
+     if (isThinking) {
+         console.log("Blocked send: isThinking is true");
+         return; // Prevent concurrent requests
+     }
+ 
+     apiKey = localStorage.getItem('geminiApiKey') || '';
+     if (!apiKey) {
+         alert('Please enter your API key in settings first');
+         // Optionally show settings modal
+         const settingsModal = document.getElementById('settingsModal');
+         const modalBackdrop = document.getElementById('modalBackdrop');
+         if (settingsModal && modalBackdrop) {
+            settingsModal.style.display = 'block';
+            modalBackdrop.style.display = 'block';
+         }
+         return;
+     }
+ 
+     const userInputText = currentInputElement.value.trim(); // Use fresh reference
+     if (!userInputText && !selectedImageData.base64) {
+         console.log("No text or image to send.");
+         return;
+     }
+ 
+     // --- UI Updates: Start Processing ---
+     isThinking = true;
+     currentSendButton.disabled = true; // Use fresh reference
+     currentSendButton.style.display = "none"; // Use fresh reference
+     currentStopButton.style.display = "flex"; // Use fresh reference
+     currentStopButton.style.opacity = "1";
+     const emptyChatDiv = document.getElementById("emptyChat");
+     if (emptyChatDiv) emptyChatDiv.style.display = "none";
+ 
+     // --- Prepare Prompt & History ---
+     const modelBehavior = localStorage.getItem('modelBehavior') || '';
+     const contextPrefix = `You, the ai are LuX AI, an AI assistant created by Luminosity to rival Axiom AI, which was made by Peter Boctor. ${modelBehavior}\n\n`;
+     let promptWithHistory = contextPrefix;
+     for (const message of conversationHistory) {
+         const content = cleanMessageContent(message.content); // Clean history content for prompt
+         if (content) {
+            promptWithHistory += `${message.role}: ${content}\n`;
+         }
+     }
+     // Add current user text (raw) to prompt
+     if (userInputText) {
+         promptWithHistory += `user: ${userInputText}\n`;
+     }
+ 
+     // --- Display User Message ---
+     const userMessageDiv = document.createElement('div');
+     userMessageDiv.className = 'message user new-message';
+     const userBubbleDiv = document.createElement('div');
+     userBubbleDiv.className = 'message-bubble'; // Just bubble base class
+     if (userInputText) { // Display raw user text
+         userBubbleDiv.innerHTML += escapeHtml(userInputText);
+     }
+     if (selectedImageData.base64) { // Display image preview
+          if(userInputText) userBubbleDiv.innerHTML += "<br><hr style='margin: 5px 0; border-color: rgba(255,255,255,0.5);'>";
+         const chatImagePreview = document.createElement('img');
+         chatImagePreview.src = `data:${selectedImageData.mimeType};base64,${selectedImageData.base64}`;
+         chatImagePreview.style.cssText = 'max-width: 150px; max-height: 150px; border-radius: 8px; margin-top: 5px; display: block;'; // Ensure display block
+         userBubbleDiv.appendChild(chatImagePreview);
+     }
+     userMessageDiv.appendChild(userBubbleDiv);
+     currentChatArea.appendChild(userMessageDiv); // Use fresh reference
+ 
+     // --- Clear Input & Reset Height ---
+     currentInputElement.value = ""; // Use fresh reference
+     currentInputElement.style.height = 'auto'; // Use fresh reference
+     currentInputElement.style.overflowY = 'hidden'; // Use fresh reference
+ 
+     // Animation cleanup for previous messages
+     setTimeout(() => {
+         // biome-ignore lint/complexity/noForEach: <explanation>
+         document.querySelectorAll('.new-message').forEach(el => {
+             if (el !== userMessageDiv) el.classList.remove('new-message');
+         });
+     }, 1000);
+ 
+     // Scroll down after adding user message
+     setTimeout(() => { scrollToBottom(); }, 100); // scrollToBottom uses global chatArea, ensure it's updated or passed currentChatArea
+ 
+     // --- Add Thinking Indicators ---
+     const thinkingDiv = document.createElement('div');
+     thinkingDiv.id = 'thinking';
+     thinkingDiv.innerHTML = 'Thinking<span class="thinking-dots"></span>';
+     currentChatArea.appendChild(thinkingDiv); // Use fresh reference
+     const spinnerDiv = document.createElement('div');
+     spinnerDiv.id = 'loadingSpinner';
+     currentChatArea.appendChild(spinnerDiv); // Use fresh reference
+     setTimeout(() => scrollToBottom(), 50); // Scroll to show indicators
+ 
+     // --- Prepare API Request ---
+     controller = new AbortController();
+     const signal = controller.signal;
+     const getModelEndpoint = (model) => {
+         console.log(`Getting endpoint for model: ${model}`);
+         // Map model selections to actual API endpoints
+         const endpoints = {
+             'gemini-2.0-flash': 'gemini-2.0-flash',
+             'gemini-2.5-flash': 'gemini-2.5-flash-preview-04-17',
+             'gemini-2.5-pro': 'gemini-2.5-pro-exp-03-25'
+         };
+         const endpoint = endpoints[model] || endpoints['gemini-2.0-flash'];
+         console.log(`Using endpoint: ${endpoint}`);
+         return endpoint;
+     };
+ 
+     // Update API request preparation
+     const modelEndpoint = getModelEndpoint(selectedModel);
+     console.log(`Sending request with model: ${selectedModel} (endpoint: ${modelEndpoint})`);
+     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}:streamGenerateContent?key=${apiKey}&alt=sse`;
+ 
+     const requestParts = [];
+     // Send history + current prompt text part
+     if (promptWithHistory.trim() !== contextPrefix.trim()) {
+          requestParts.push({ text: promptWithHistory });
+     }
+     // Send image part if present
+     if (selectedImageData.base64) {
+         requestParts.push({
+             inlineData: { mimeType: selectedImageData.mimeType, data: selectedImageData.base64 }
+         });
+     }
+ 
+     // Check if there are actually parts to send
+     if (requestParts.length === 0) {
+         console.error("No valid content parts to send to API.");
+          document.getElementById('thinking')?.remove(); // Clean up indicators
+          document.getElementById('loadingSpinner')?.remove();
+          isThinking = false; 
+          currentSendButton.disabled = false; // Use fresh reference
+          currentStopButton.style.display = "none"; // Use fresh reference
+          currentSendButton.style.display = "flex"; // Use fresh reference
+          currentChatArea.innerHTML += `<p class="error-message">Cannot send empty message.</p>`; // Use fresh reference
+          // Reset textarea height in case something was typed then deleted
+          if(currentInputElement) { // Use fresh reference
+              currentInputElement.style.height = 'auto';
+              currentInputElement.style.overflowY = 'hidden';
+          }
+          return;
+     }
+ 
+     const requestBody = {
+         contents: [{ role: "user", parts: requestParts }],
+     };
+ 
+     // Clear image state for next message *after* preparing request body
+     const imageToSend = { ...selectedImageData }; // Keep copy if needed for history
+     clearSelectedImage();
+ 
+     // --- Prepare Bot Message Area ---
+     const botDiv = document.createElement('div'); // Outer container for alignment
+     botDiv.classList.add('message', 'bot'); // Add 'bot' role for alignment/targeting
+     const botMessageDiv = document.createElement('div'); // This is the actual bubble
+     botMessageDiv.classList.add("message-bubble"); // Apply bubble styling
+ 
+     let fullBotResponse = "";
+     let responseStarted = false;
+ 
+     // --- Store User Input for History ---
+     let userMessageAddedToHistory = null;
+     if (userInputText || imageToSend.base64) { // Use original text
+         userMessageAddedToHistory = { role: "user", content: userInputText || "[Sent Image]" };
+     }
+ 
+     // --- Fetch and Process Stream ---
+     try {
+         const response = await fetch(url, {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(requestBody),
+             signal: signal
+         });
+ 
+         // Remove indicators once fetch responds
+         document.getElementById('thinking')?.remove(); 
+         document.getElementById('loadingSpinner')?.remove();
+ 
+         if (!response.ok) {
+             let errorBody = "Could not read error details.";
+             try { errorBody = await response.text(); } catch (e) { /* Ignore */ }
+             console.error("API Error:", response.status, errorBody);
+             throw new Error(`HTTP error ${response.status}: ${errorBody}`);
+         }
+ 
+         const reader = response.body.getReader();
+         const decoder = new TextDecoder();
+         let buffer = '';
+ 
+         while (true) {
+             if (signal.aborted) { 
+                 console.log("Stream reading aborted."); 
+                 break; 
+             }
+ 
+             const { done, value } = await reader.read();
+             if (done) break;
+ 
+             buffer += decoder.decode(value, { stream: true });
+             const lines = buffer.split('\n');
+             buffer = lines.pop() || ''; // Keep incomplete line in buffer
+ 
+             for (const line of lines) {
+                 if (!line.trim() || !line.startsWith('data: ')) continue;
+ 
+                 try {
+                     const jsonData = JSON.parse(line.substring(5));
+                     if (!jsonData.candidates?.[0]?.content?.parts?.[0]?.text) continue;
+ 
+                     const textChunk = jsonData.candidates[0].content.parts[0].text;
+                     if (!responseStarted) {
+                         document.getElementById('thinking')?.remove();
+                         document.getElementById('loadingSpinner')?.remove();
+                         botDiv.appendChild(botMessageDiv);
+                         currentChatArea.appendChild(botDiv);
+                         responseStarted = true;
+                     }
+ 
+                     fullBotResponse += textChunk;
+                     const cleanedResponse = cleanMessageContent(fullBotResponse);
+                     botMessageDiv.innerHTML = formatResponse(cleanedResponse);
+                     attachCopyListeners();
+                     scrollToBottom();
+ 
+                 } catch (e) {
+                     console.warn("Error processing chunk:", e);
+                 }
+             }
+         } // end while loop
+ 
+          // --- Store Interaction in History (on success) ---
+          if (userMessageAddedToHistory) {
+              conversationHistory.push(userMessageAddedToHistory); // Store raw user input
+          }
+          if (fullBotResponse) {
+              const finalResponseToStore = cleanMessageContent(fullBotResponse); // Clean before storage
+              conversationHistory.push({ role: "model", content: finalResponseToStore });
+          }
+ 
+     } catch (error) {
+         // --- Error Handling ---
+         document.getElementById('thinking')?.remove();
+         document.getElementById('loadingSpinner')?.remove();
+ 
+         if (error.name === 'AbortError') {
+             console.log('Fetch aborted by user.');
+             if (responseStarted && botMessageDiv) {
+                 // Clean potentially partial response before adding stop message
+                 const cleanedResponseForDisplay = cleanMessageContent(fullBotResponse);
+                 // biome-ignore lint/style/useTemplate: <explanation>
+                 botMessageDiv.innerHTML = formatResponse(cleanedResponseForDisplay) + 
+                     `<p style='color: var(--text-color-secondary); font-style: italic; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);'>Response stopped by user</p>`;
+                  scrollToBottom(); 
+              }
+         } else {
+             console.error("Error during fetch/streaming:", error);
+             const errorMessage = error.message || "An unknown error occurred.";
+             
+             // Check if it's an image-related error
+             const isImageError = errorMessage.includes('Provided image is not valid') || 
+                                errorMessage.includes('INVALID_ARGUMENT');
+             
+             const userFriendlyMessage = isImageError ? 
+                 "Unsupported image type. Please try a different image format." :
+                 `Error: ${escapeHtml(errorMessage)}`;
+             
+             currentChatArea.innerHTML += `<p class="error-message">${userFriendlyMessage}</p>`;
+             scrollToBottom();
+             if (responseStarted && botDiv) botDiv.remove();
+         }
+     } finally {
+         // --- Final Cleanup ---
+         document.getElementById('thinking')?.remove(); 
+         document.getElementById('loadingSpinner')?.remove(); 
+     }
+ 
+         isThinking = false;
+         // Use fresh references for buttons
+         if (currentSendButton) {
+             currentSendButton.disabled = false;
+             currentSendButton.style.display = "flex";
+         }
+         if (currentStopButton) {
+             currentStopButton.style.display = "none";
+         }
+         controller = null;
+         // userManuallyScrolled = false; // This variable seems unused, consider removing
+         clearSelectedImage(); 
+ } // End sendMessage
+ 
+ // Update helper functions to potentially use passed elements or re-fetch
+ // It might be simpler to just re-fetch inside them if needed, or rely on the global ones
+ // if they are reliably updated elsewhere (e.g., in DOMContentLoaded).
+ // For now, leaving scrollToBottom and attachCopyListeners as they are, assuming
+ // the global chatArea reference is sufficient once set in DOMContentLoaded.
+ </script>
+<script>document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.model-selector-container');
+    const display = document.querySelector('.model-selector-display');
+    const options = document.querySelectorAll('.model-dropdown-option');
+    const displayText = display.querySelector('span');
+
+    // Set initial selection from localStorage
+    const savedModel = localStorage.getItem('selectedModel') || 'gemini-2.0-flash';
+    console.log(`Initial model from localStorage: ${savedModel}`);
+    
+    // Update initial display
+    options.forEach(option => {
+        if (option.dataset.model === savedModel) {
+            const modelName = option.querySelector('.model-name').textContent;
+            displayText.textContent = modelName;
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            console.log(`Set initial display to: ${modelName} (${savedModel})`);
+        }
+    });
+
+    // Toggle dropdown
+    display.addEventListener('click', (e) => {
+        e.stopPropagation();
+        container.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+        container.classList.remove('open');
+    });
+
+    // Handle option selection
+    options.forEach(option => {
+        option.addEventListener('click', () => {
+            const modelId = option.dataset.model;
+            const modelName = option.querySelector('.model-name').textContent;
+            console.log(`Model selection clicked: ${modelName} (${modelId})`);
+            
+            // Update display
+            displayText.textContent = modelName;
+            
+            // Update selected state
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            
+            // Save selection and dispatch event
+            localStorage.setItem('selectedModel', modelId);
+            console.log(`Saved model selection to localStorage: ${modelId}`);
+            
+            window.dispatchEvent(new CustomEvent('modelChange', {
+                detail: { model: modelId }
+            }));
+            
+            container.classList.remove('open');
+        });
+    });
+});</script>
+</body>
+</html>
