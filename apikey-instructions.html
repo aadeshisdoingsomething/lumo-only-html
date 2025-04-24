@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+    <title>API Key Instructions | LuX AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Import Variables */
+        :root {
+            --bg-color: #111827;
+            --text-color: #e5e7eb;
+            --card-bg: rgba(31, 41, 55, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-accent: #7c3aed;
+            --secondary-accent: #2563eb;
+            --accent-gradient: linear-gradient(135deg, var(--secondary-accent), var(--primary-accent));
+            --link-color: #818cf8;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f9fafb;
+            --text-color: #1f2937;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --link-color: #4f46e5;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .instructions-container {
+            width: min(800px, calc(100% - 2rem));
+            margin: 4rem auto;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(8px);
+            position: relative;
+        }
+
+        .instruction-group {
+            background: rgba(124, 58, 237, 0.05);
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .instruction-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0 0 2rem;
+            text-align: center;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary-accent);
+            margin: 0 0 1rem;
+        }
+
+        p {
+            margin: 1rem 0;
+            color: var(--text-color);
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--primary-accent);
+            text-decoration: underline;
+        }
+
+        .back-button {
+            position: absolute;
+            top: -3rem;
+            left: 0;
+            padding: 0.6rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: var(--primary-accent);
+            transform: translateY(-1px);
+        }
+
+        .note {
+            background: rgba(124, 58, 237, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .instructions-container {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
+
+            .instruction-group {
+                padding: 1.2rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .primary-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--accent-gradient);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            border: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions-container">
+        <a href="settings.html" class="back-button">
+            ← Back to Settings
+        </a>
+        
+        <h1>How to Get Your API Key</h1>
+
+        <div class="instruction-group">
+            <h2>Step 1: Go to Google AI Studio</h2>
+            <p>Visit the Google AI Studio website by clicking the button below (it may be blocked on some work/school administered devices):</p>
+            <a href="https://makersuite.google.com/app/apikey" target="_blank" class="primary-button">
+                Open Google AI Studio →
+            </a>
+        </div>
+
+        <div class="instruction-group">
+            <h2>Step 2: Sign In</h2>
+            <p>If you're not already signed in, sign in with your Google account.</p>
+        </div>
+
+        <div class="instruction-group">
+            <h2>Step 3: Get API Key</h2>
+            <p>Once signed in:</p>
+            <ol>
+                <li>Look for the "Get API key" button or section</li>
+                <li>Click on "Create API key"</li>
+                <li>Your new API key will be generated</li>
+                <li>Copy the API key to your clipboard</li>
+                <li>Save this somewhere you can easily access (not here) in case you need it</li>
+            </ol>
+        </div>
+
+        <div class="instruction-group">
+            <h2>Step 4: Add API Key to Chat</h2>
+            <ol>
+                <li>Return to the chat interface</li>
+                <li>Click the ⚙️ Settings button</li>
+                <li>Paste your API key in the input field</li>
+                <li>Click Save</li>
+            </ol>
+        </div>
+
+        <div class="note">
+            <p><strong>Important:</strong> Keep your API key secure and never share it with others. If you believe your key has been compromised, return to Google AI Studio to revoke it and generate a new one.</p>
+        </div>
+    </div>
+</body>
+</html>
