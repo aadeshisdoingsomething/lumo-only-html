@@ -1563,15 +1563,23 @@ body {
   <div class="input-container">
     <div class="input-wrapper">
       <div class="input-controls-left">
-        <label class="image-upload-wrapper">
-          <input type="file" id="imageInput" accept="image/*" style="display: none;">
-          <div class="image-upload-button">📎</div> 
-        </label>
+        <div class="add-content-dropdown">
+          <button class="add-content-button" type="button">+</button>
+          <div class="add-content-menu">
+            <label class="add-content-option">
+              <input type="file" id="imageInput" accept="image/*" style="display: none;">
+              <span>📤 Upload Image</span>
+            </label>
+            <button class="add-content-option" disabled>
+              <span>📸 Camera</span>
+            </button>
+          </div>
+        </div>
       </div>
       <textarea id="userInput" rows="1" placeholder="Type your message..."></textarea>
       <div class="input-controls-right">
         <div class="button-group">
-          <button id="sendButton" type="button" onclick="sendMessage()">Send</button>
+          <button id="sendButton" type="button" onclick="sendMessage()">➤</button>
           <button id="stopButton" type="button">Stop</button>
         </div>
       </div>
