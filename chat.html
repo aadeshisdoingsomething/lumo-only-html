@@ -406,28 +406,27 @@ textarea { resize: none; overflow-y: hidden; min-height: 48px; }
 .button-group { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
 #sendButton {
-	/* Apply primary styles */
-	background: var(--accent-gradient); background-size: 200% 100%;
-	background-position: right bottom; border: none; color: white;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-	/* Animation specific */
-	gap: 0.5rem; position: relative; overflow: hidden;
-    /* *** FIX: Added padding to transition *** */
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-position 0.3s ease, padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.2rem;
+    min-height: 44px;
+    background: var(--accent-gradient);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 #sendButton:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25);
-	background-position: left bottom;
-	text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(124, 58, 237, 0.25);
+    background-position: left bottom;
+    text-decoration: none;
 }
-/* Send button hover animation text/arrow */
-#sendButton span { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
-#sendButton:not(:disabled):hover { padding-right: 2.5rem; } /* This triggers size change */
-#sendButton:not(:disabled):hover span:first-child { transform: translateX(-150%); opacity: 0; }
-#sendButton:not(:disabled):hover span:last-child { transform: translateX(-100%); opacity: 0; }
-#sendButton::after { content: "→"; position: absolute; right: -2rem; top: 50%; transform: translateY(-50%); opacity: 0; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.5rem; font-weight: bold; line-height: 1; }
-#sendButton:not(:disabled):hover::after { right: 0.8rem; opacity: 1; }
 
 #stopButton {
     /* Apply secondary-like style but distinct */
@@ -1524,6 +1523,86 @@ body {
     padding-left: 10px;
     padding-right: 10px;
   }
+}
+
+/* Add Content Dropdown */
+.add-content-dropdown {
+    position: relative;
+}
+
+.add-content-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.2rem;
+    background: transparent;
+    border: 1px solid var(--primary-accent);
+    color: var(--primary-accent);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+}
+
+.add-content-button:hover {
+    background: rgba(124, 58, 237, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+    color: var(--link-color);
+    border-color: var(--link-color);
+}
+
+.add-content-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+    min-width: 160px;
+}
+
+.add-content-dropdown:hover .add-content-menu,
+.add-content-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.add-content-option {
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.add-content-option:not(:disabled):hover {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.add-content-option:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Remove existing send button hover animations */
+#sendButton span, 
+#sendButton::after {
+    display: none;
 }</style>
 </head>
 <body>
