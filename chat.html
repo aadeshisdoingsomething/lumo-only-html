@@ -1603,7 +1603,94 @@ body {
 #sendButton span, 
 #sendButton::after {
     display: none;
-}</style>
+}
+
+/* Custom Popup Styles */
+.custom-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    max-width: 90%;
+    width: 320px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.custom-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.custom-popup .popup-content {
+    text-align: center;
+    color: var(--text-color);
+}
+
+.custom-popup .popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.custom-popup .popup-button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    min-width: 80px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-popup .popup-button.primary {
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+}
+
+.custom-popup .popup-button.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.custom-popup .popup-button.primary {
+    background: var(--accent-gradient);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    color: white;
+    border: none;
+}
+
+.custom-popup .popup-button.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+    background-position: left bottom;
+}
+
+.custom-popup .popup-button.secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.custom-popup .popup-button.secondary:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+  </style>
 </head>
 <body>
   <a href="index.html" id="homeButton">🏠 <span class="button-text">Home</span></a>
@@ -1664,6 +1751,13 @@ body {
       </div>
     </div>
     <div id="imagePreviewContainer"></div>
+  </div>
+  <div class="custom-popup" id="popup">
+    <div class="popup-content"></div>
+    <div class="popup-buttons">
+      <button class="popup-button primary" id="popupPrimary">OK</button>
+      <button class="popup-button secondary" id="popupSecondary" style="display: none;">Cancel</button>
+    </div>
   </div>
 
 <script>let selectedModel = localStorage.getItem('selectedModel') || 'gemini-2.0-flash';
@@ -1912,7 +2006,7 @@ body {
      } else {
          clearSelectedImage();
          if (file) {
-            alert("Please select a valid image file.");
+            showPopup('Please select a valid image file.');
          }
      }
       if(event.target) event.target.value = null; // Reset file input
@@ -2085,14 +2179,19 @@ body {
  
      apiKey = localStorage.getItem('geminiApiKey') || '';
      if (!apiKey) {
-         alert('Please enter your API key in settings first');
-         // Optionally show settings modal
-         const settingsModal = document.getElementById('settingsModal');
-         const modalBackdrop = document.getElementById('modalBackdrop');
-         if (settingsModal && modalBackdrop) {
-            settingsModal.style.display = 'block';
-            modalBackdrop.style.display = 'block';
-         }
+         showPopup('Please enter your API key in settings first', 'Open Settings', 'Cancel', (result) => {
+             if (result) { // If primary button (Open Settings) was clicked
+                 const settingsModal = document.getElementById('settingsModal');
+                 const modalBackdrop = document.getElementById('modalBackdrop');
+                 if (settingsModal && modalBackdrop) {
+                     settingsModal.style.display = 'block';
+                     modalBackdrop.style.display = 'block';
+                 } else {
+                     // Fallback to direct navigation if modal elements don't exist
+                     window.location.href = 'settings.html';
+                 }
+             }
+         });
          return;
      }
  
@@ -2374,7 +2473,49 @@ body {
  // if they are reliably updated elsewhere (e.g., in DOMContentLoaded).
  // For now, leaving scrollToBottom and attachCopyListeners as they are, assuming
  // the global chatArea reference is sufficient once set in DOMContentLoaded.
- 
+
+// Add this function near other helper functions
+function showPopup(message, primaryText = 'OK', secondaryText = null, callback = null) {
+    const popup = document.getElementById('popup');
+    const content = popup.querySelector('.popup-content');
+    const primaryBtn = document.getElementById('popupPrimary');
+    const secondaryBtn = document.getElementById('popupSecondary');
+
+    content.textContent = message;
+    primaryBtn.textContent = primaryText;
+    
+    // Handle secondary button
+    if (secondaryText) {
+        secondaryBtn.textContent = secondaryText;
+        secondaryBtn.style.display = 'block';
+    } else {
+        secondaryBtn.style.display = 'none';
+    }
+
+    // Clear old listeners
+    const newPrimaryBtn = primaryBtn.cloneNode(true);
+    const newSecondaryBtn = secondaryBtn.cloneNode(true);
+    primaryBtn.parentNode.replaceChild(newPrimaryBtn, primaryBtn);
+    secondaryBtn.parentNode.replaceChild(newSecondaryBtn, secondaryBtn);
+
+    // Add new listeners
+    newPrimaryBtn.onclick = () => {
+        popup.classList.remove('show');
+        if (callback) {
+            // Small delay to allow popup animation to complete
+            setTimeout(() => callback(true), 200);
+        }
+    };
+    
+    newSecondaryBtn.onclick = () => {
+        popup.classList.remove('show');
+        if (callback) callback(false);
+    };
+
+    popup.classList.add('show');
+}
+
+
  </script>
 <script>document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.model-selector-container');
