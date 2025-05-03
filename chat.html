@@ -1693,8 +1693,10 @@ body {
   </style>
 </head>
 <body>
-  <a href="index.html" id="homeButton">🏠 <span class="button-text">Home</span></a>
-  <a href="settings.html" id="settingsButton">⚙️ <span class="button-text">Settings</span></a>
+  <!-- Update Home Button Link -->
+  <a href="https://sites.google.com/view/luminositychat/" id="homeButton">🏠 <span class="button-text">Home</span></a>
+  <!-- Change Settings Link to Button -->
+  <button type="button" id="settingsButton" onclick="openSettingsPopup()">⚙️ <span class="button-text">Settings</span></button>
 
   <div class="model-selector-wrapper">
     <div class="model-selector-container">
@@ -1759,6 +1761,26 @@ body {
       <button class="popup-button secondary" id="popupSecondary" style="display: none;">Cancel</button>
     </div>
   </div>
+
+  <!-- Settings Popup Modal (styled like .custom-popup) -->
+  <div class="custom-popup" id="settingsPopup" style="z-index:2100;">
+    <div class="popup-content">
+      <h2 style="margin-top:0;">Settings</h2>
+      <div class="setting-item" style="margin-bottom:1.5rem;">
+        <label for="popupApiKeyInput">Gemini API Key</label>
+        <div class="input-with-button">
+          <input type="password" id="popupApiKeyInput" placeholder="Enter your API key">
+          <button type="button" class="show-hide-btn" onclick="toggleApiKeyVisibility()">Show</button>
+        </div>
+        <a href="https://sites.google.com/view/luminositychat/apikey-instructions" class="help-link" target="_blank" style="display:block;margin-top:0.5rem;">How to get an API key →</a>
+      </div>
+    </div>
+    <div class="popup-buttons">
+      <button type="button" class="popup-button secondary" onclick="closeSettingsPopup()">Cancel</button>
+      <button type="button" class="popup-button primary" onclick="saveApiKey()">Save</button>
+    </div>
+  </div>
+  <div class="settings-popup-backdrop" id="settingsBackdrop" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:2099;backdrop-filter:blur(5px);"></div>
 
 <script>let selectedModel = localStorage.getItem('selectedModel') || 'gemini-2.0-flash';
  
@@ -2181,15 +2203,7 @@ body {
      if (!apiKey) {
          showPopup('Please enter your API key in settings first', 'Open Settings', 'Cancel', (result) => {
              if (result) { // If primary button (Open Settings) was clicked
-                 const settingsModal = document.getElementById('settingsModal');
-                 const modalBackdrop = document.getElementById('modalBackdrop');
-                 if (settingsModal && modalBackdrop) {
-                     settingsModal.style.display = 'block';
-                     modalBackdrop.style.display = 'block';
-                 } else {
-                     // Fallback to direct navigation if modal elements don't exist
-                     window.location.href = 'settings.html';
-                 }
+                 openSettingsPopup();
              }
          });
          return;
@@ -2575,5 +2589,185 @@ function showPopup(message, primaryText = 'OK', secondaryText = null, callback =
         });
     });
 });</script>
+<script>document.addEventListener('DOMContentLoaded', () => {
+    const apiKey = localStorage.getItem('geminiApiKey') || '';
+    const theme = localStorage.getItem('theme') || 'dark';
+    const modelBehavior = localStorage.getItem('modelBehavior') || '';
+
+    document.getElementById('apiKeyInput').value = apiKey;
+    document.getElementById('themeToggle').checked = theme === 'light';
+    document.getElementById('modelBehavior').value = modelBehavior;
+
+    applyTheme(theme);
+});
+
+function saveSettings() {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const theme = document.getElementById('themeToggle').checked ? 'light' : 'dark';
+    const modelBehavior = document.getElementById('modelBehavior').value.trim();
+
+    localStorage.setItem('geminiApiKey', apiKey);
+    localStorage.setItem('theme', theme);
+    localStorage.setItem('modelBehavior', modelBehavior);
+
+    applyTheme(theme);
+    
+    // Show feedback toast
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #10B981;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        animation: slideUp 0.3s ease-out, fadeOut 0.3s ease-out 2s forwards;
+        z-index: 1000;
+    `;
+    toast.textContent = 'Settings saved successfully!';
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 2500);
+
+    // Clear unsaved changes flag after saving
+    hasUnsavedChanges = false;
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0a0a0a';
+    document.body.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0a0a0a';
+}
+
+document.getElementById('themeToggle').addEventListener('change', (e) => {
+    applyTheme(e.target.checked ? 'light' : 'dark');
+});
+
+// Add beforeunload warning if there are unsaved changes
+let hasUnsavedChanges = false;
+
+function trackChanges() {
+    hasUnsavedChanges = true;
+}
+
+['apiKeyInput', 'themeToggle', 'modelBehavior'].forEach(id => {
+    document.getElementById(id).addEventListener('change', trackChanges);
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+    }
+});
+
+function toggleApiKeyVisibility() {
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const showHideBtn = document.querySelector('.show-hide-btn');
+    
+    if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        showHideBtn.textContent = 'Hide';
+    } else {
+        apiKeyInput.type = 'password';
+        showHideBtn.textContent = 'Show';
+    }
+}</script>
+<script>
+// --- Settings Popup Elements ---
+let settingsPopup = null;
+let settingsBackdrop = null;
+let popupApiKeyInput = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+
+    // Assign settings popup elements
+    settingsPopup = document.getElementById('settingsPopup');
+    settingsBackdrop = document.getElementById('settingsBackdrop');
+    popupApiKeyInput = document.getElementById('popupApiKeyInput');
+
+    // Settings Popup Listener
+    const settingsButton = document.getElementById('settingsButton');
+    if (settingsButton) {
+        settingsButton.onclick = openSettingsPopup;
+    }
+    if (settingsBackdrop) {
+        settingsBackdrop.onclick = closeSettingsPopup;
+    }
+
+    // --- Fix: Ensure send button and Enter key work ---
+    const userInput = document.getElementById("userInput");
+    const sendButton = document.getElementById("sendButton");
+    const stopButton = document.getElementById("stopButton");
+
+    if (userInput) {
+        userInput.addEventListener("keydown", (event) => {
+            if ((event.key === "Enter" || event.keyCode === 13) && !event.shiftKey) {
+                event.preventDefault();
+                if (!isThinking) {
+                    sendMessage();
+                }
+            }
+        });
+    }
+    if (sendButton) {
+        sendButton.addEventListener('click', () => {
+            if (!isThinking) {
+                sendMessage();
+            }
+        });
+    }
+    if (stopButton) {
+        stopButton.addEventListener('click', stopResponse);
+        stopButton.style.display = 'none';
+    }
+    // ...existing code...
+});
+
+// --- Settings Popup Functions ---
+function openSettingsPopup() {
+    if (!settingsPopup || !settingsBackdrop || !popupApiKeyInput) return;
+    popupApiKeyInput.value = localStorage.getItem('geminiApiKey') || '';
+    settingsPopup.classList.add('show');
+    settingsBackdrop.style.display = 'block';
+}
+function closeSettingsPopup() {
+    if (!settingsPopup || !settingsBackdrop) return;
+    settingsPopup.classList.remove('show');
+    setTimeout(() => { settingsBackdrop.style.display = 'none'; }, 200);
+}
+function saveApiKey() {
+    if (!popupApiKeyInput) return;
+    const newApiKey = popupApiKeyInput.value.trim();
+    localStorage.setItem('geminiApiKey', newApiKey);
+    closeSettingsPopup();
+    showToast('API Key saved successfully!');
+}
+function toggleApiKeyVisibility() {
+    if (!popupApiKeyInput) return;
+    const button = document.querySelector('.custom-popup .show-hide-btn');
+    if (popupApiKeyInput.type === 'password') {
+        popupApiKeyInput.type = 'text';
+        if (button) button.textContent = 'Hide';
+    } else {
+        popupApiKeyInput.type = 'password';
+        if (button) button.textContent = 'Show';
+    }
+}
+function showToast(message) {
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) existingToast.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+}
+
+// ...existing code...
+</script>
 </body>
 </html>
