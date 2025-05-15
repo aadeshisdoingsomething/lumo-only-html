@@ -1,4 +1,4 @@
-###Luminosity AI
+### Luminosity AI
 
 This project is an experimental UI and functionality test for an AI website.  It's built with basic HTML, CSS, and JavaScript to explore different user interface concepts and AI-related functions.
 
@@ -59,6 +59,6 @@ This project is open-source.
 
 *   This project was inspired by Open Web UI.
 
-### This website is experimental
+## This website is experimental
 
 Was not made for any harm and is mainy focused on testing the limits of google sites.
