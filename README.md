@@ -1,4 +1,4 @@
-#Luminosity AI
+###Luminosity AI
 
 This project is an experimental UI and functionality test for an AI website.  It's built with basic HTML, CSS, and JavaScript to explore different user interface concepts and AI-related functions.
 
