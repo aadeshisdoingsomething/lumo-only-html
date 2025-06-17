@@ -1709,15 +1709,15 @@ body {
       </button>
       <div class="model-dropdown">
         <div class="model-dropdown-option" data-model="gemini-2.5-pro">
-          <div class="model-name">2.5 Pro (disabled)</div>
-          <div class="model-description">TEMPORATILY DISABLED, WILL GIVE ERROR</div>
+          <div class="model-name">1.5 Pro</div>
+          <div class="model-description">Best for complex tasks</div>
         </div>
         <div class="model-dropdown-option" data-model="gemini-2.5-flash">
-          <div class="model-name">2.5 Flash</div>
+          <div class="model-name">1.5 Plus</div>
           <div class="model-description">Latest model, thinks deep</div>
         </div>
         <div class="model-dropdown-option" data-model="gemini-2.0-flash">
-          <div class="model-name">2.0 Flash</div>
+          <div class="model-name">1.5 Lite</div>
           <div class="model-description">Fast responses, more than enough</div>
         </div>
       </div>
@@ -2291,9 +2291,9 @@ body {
          console.log(`Getting endpoint for model: ${model}`);
          // Map model selections to actual API endpoints
          const endpoints = {
-             'gemini-2.0-flash': 'gemini-2.0-flash',
-             'gemini-2.5-flash': 'gemini-2.5-flash-preview-05-20',
-             'gemini-2.5-pro': 'gemini-2.5-pro-exp-03-25'
+             'gemini-2.0-flash': 'gemini-2.0-flash-lite',
+             'gemini-2.5-flash': 'gemini-2.0-flash',
+             'gemini-2.5-pro': 'gemini-2.5-flash-previewp-05-20'
          };
          const endpoint = endpoints[model] || endpoints['gemini-2.0-flash'];
          console.log(`Using endpoint: ${endpoint}`);
